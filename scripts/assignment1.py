@@ -20,6 +20,11 @@ def move_circle():
 
 def move_square():
     print('COMPLETE')
+    
+    
+def move_MShape():
+    print('COMPLETE')
 
+    
 if __name__ == "__main__":
     move_line()
