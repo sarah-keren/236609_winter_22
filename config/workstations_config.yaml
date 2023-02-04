@@ -1,0 +1,32 @@
+num_ws: 3
+ws0:
+  location:
+    - -0.5
+    - -3.5
+  tasks:
+    - 'ACT1'
+    - 'ACT2'
+    - 'PU-A'
+    - 'PL-A'
+    - 'PU-B'
+    - 'PL-B'
+ws1:
+    location:
+      - 2.5
+      - -0.5
+    tasks:
+      - 'ACT2'
+      - 'ACT3'
+      - 'PU-B'
+      - 'PL-B'
+      - 'PU-C'
+      - 'PL-C'
+ws2:
+    location:
+      - -3.5
+      - -2.5
+    tasks:
+      - 'ACT1'
+      - 'ACT4'
+      - 'PU-A'
+      - 'PL-A'

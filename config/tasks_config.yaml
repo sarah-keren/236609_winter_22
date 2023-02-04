@@ -1,0 +1,5 @@
+tasks:
+  ACT1->ACT2: 20
+  ACT2->ACT3: 30
+  ACT1->ACT3->ACT2: 50
+  ACT1->ACT4: 10
