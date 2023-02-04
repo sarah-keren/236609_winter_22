@@ -16,7 +16,6 @@ class TurtleBot:
     def __init__(self):
         self.initial_position = None
         rospy.Subscriber('/initialpose', PoseWithCovarianceStamped, callback=self.set_initial_position)
-        self.time = None
 
         print("Waiting for an initial position...")
         while self.initial_position is None:
@@ -28,15 +27,13 @@ class TurtleBot:
         self.initial_position = np.array([initial_pose.position.x, initial_pose.position.y])
 
     def run(self, ws, tasks, time):
-        self.time = time
 
-        # ==== You can delete =======
-
+        # ==== You can delete this, it is for you to see the relevant dictionaries =======
         print(tasks)
         for w, val in ws.items():
             print(w + ' center is at ' + str(val.location) + ' and its affordance center is at ' + str(
                 val.affordance_center))
-        # ===========================
+        # ================================================================================
 
 
 # ======================================================================================================================
