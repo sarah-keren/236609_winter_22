@@ -2,12 +2,15 @@
 
 import rospy
 import random
+import numpy as np
 from nav_msgs.msg import Odometry
+from std_msgs.msg import String
 from std_srvs.srv import Trigger, TriggerResponse
 import yaml
 import os
 
 from visualization_msgs.msg import Marker
+from costmap_listen_and_update import CostmapUpdater
 
 CUBE_EDGE = 0.5
 
@@ -24,18 +27,14 @@ class RvizPublisher:
         topic = 'visualization_marker'
         self.publisher = rospy.Publisher(topic, Marker, queue_size=10)
 
-    def update_and_publish_markers(self, color_r, color_g, color_b, p_x, p_y, green, id):
+    def update_and_publish_markers(self, color_r, color_g, color_b, p_x, p_y, id):
         marker = Marker()
         marker.id = id
         marker.header.frame_id = "map"
         marker.type = marker.CUBE
         marker.action = marker.ADD
-	if green:
-	    marker.scale.x = CUBE_EDGE + 0.1
-	    marker.scale.y = CUBE_EDGE + 0.1
-	else:
-	    marker.scale.x = CUBE_EDGE
-	    marker.scale.y = CUBE_EDGE
+        marker.scale.x = CUBE_EDGE
+        marker.scale.y = CUBE_EDGE
         marker.scale.z = 0.1
         marker.color.a = 0.5
         marker.color.r = color_r
@@ -59,9 +58,23 @@ class AffordanceServ:
         rospy.Service('/affordance_service', Trigger, self.handle_request)
         self.odom_sub = rospy.Subscriber('/odom', Odometry, self.update_status)
         self.rviz_pub = RvizPublisher()
-	for key, val in self.aff_cen.items():
-            self.rviz_pub.update_and_publish_markers(1, 0, 0, val[0], val[1], False, int(key[2]))
-	
+        self.cost_pub = rospy.Publisher('current_cost', String, queue_size=10)
+        self.curr_pose = None
+        self.time = 0
+        self.cmu = CostmapUpdater()
+        for key, val in self.aff_cen.items():
+            self.rviz_pub.update_and_publish_markers(1, 0, 0, val[0], val[1], int(key[2]))
+        rospy.Timer(rospy.Duration(1), self.publish_cost)
+
+    def publish_cost(self, event):
+        if self.curr_pose is None:
+            return
+        self.time += 1
+        idx_x, idx_y = self.cmu.position_to_map(self.curr_pose)
+        c = self.cmu.cost_map[int(idx_x)][int(idx_y)]
+        message = String()
+        message.data = str(c + self.time)
+        self.cost_pub.publish(message)
 
     def handle_request(self, req):
         # Do some processing here and return a response
@@ -75,14 +88,15 @@ class AffordanceServ:
     def update_status(self, msg):
         pose_x = msg.pose.pose.position.x
         pose_y = msg.pose.pose.position.y
+        self.curr_pose = np.array([pose_x, pose_y])
         point = (pose_x, pose_y)
         for key, val in self.aff_cen.items():
             if point_in_square(point, val):
                 new_msg = 'turtlebot currently in workstation: ' + key
-		print(new_msg)
-                self.rviz_pub.update_and_publish_markers(0, 1., 0, val[0], val[1], True, int(key[2]))
+                print(new_msg)
+                self.rviz_pub.update_and_publish_markers(0, 1., 0, val[0], val[1], int(key[2]))
             else:
-            	self.rviz_pub.update_and_publish_markers(1., 0, 0, val[0], val[1], False, int(key[2]))
+                self.rviz_pub.update_and_publish_markers(1., 0, 0, val[0], val[1], int(key[2]))
 
 
 if __name__ == '__main__':
