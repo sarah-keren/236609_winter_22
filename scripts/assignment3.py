@@ -8,6 +8,7 @@ import numpy as np
 
 from std_srvs.srv import Trigger
 from geometry_msgs.msg import PoseWithCovarianceStamped
+import dynamic_reconfigure.client
 
 CUBE_EDGE = 0.5
 
@@ -16,6 +17,7 @@ class TurtleBot:
     def __init__(self):
         self.initial_position = None
         rospy.Subscriber('/initialpose', PoseWithCovarianceStamped, callback=self.set_initial_position)
+        self.time = None
 
         print("Waiting for an initial position...")
         while self.initial_position is None:
@@ -27,13 +29,15 @@ class TurtleBot:
         self.initial_position = np.array([initial_pose.position.x, initial_pose.position.y])
 
     def run(self, ws, tasks, time):
+        self.time = time
 
-        # ==== You can delete this, it is for you to see the relevant dictionaries =======
+        # ==== You can delete =======
+
         print(tasks)
         for w, val in ws.items():
             print(w + ' center is at ' + str(val.location) + ' and its affordance center is at ' + str(
                 val.affordance_center))
-        # ================================================================================
+        # ===========================
 
 
 # ======================================================================================================================
@@ -72,6 +76,11 @@ if __name__ == '__main__':
     )
     args = CLI.parse_args()
     time = args.time
+
+    gcm_client = dynamic_reconfigure.client.Client("/move_base/global_costmap/inflation_layer")
+    gcm_client.update_configuration({"inflation_radius": 0.2})
+    lcm_client = dynamic_reconfigure.client.Client("/move_base/local_costmap/inflation_layer")
+    lcm_client.update_configuration({"inflation_radius": 0.2})
 
     ws_file = os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + "/config/workstations_config.yaml"
     tasks_file = os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + "/config/tasks_config.yaml"
