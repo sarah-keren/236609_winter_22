@@ -206,14 +206,14 @@ class AffordanceServ:
         return res
 
     def update_status(self, msg):
-        print(self.done_actions)
         pose_x = msg.pose.pose.position.x
         pose_y = msg.pose.pose.position.y
         self.curr_pose = np.array([pose_x, pose_y])
         point = (pose_x, pose_y)
         for key, val in self.aff_cen.items():
             if point_in_square(point, val):
-                new_msg = 'turtlebot currently in workstation: ' + key
+                # Uncomment for debugging
+                # new_msg = 'turtlebot currently in workstation: ' + key
                 # print(new_msg)
                 self.rviz_pub.update_and_publish_markers(0, 1., 0, val[0], val[1], int(key[2]))
             else:
