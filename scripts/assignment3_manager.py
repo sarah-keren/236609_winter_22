@@ -82,6 +82,7 @@ class AffordanceServ:
         for key, val in self.tasks.items():
             curr_task = key.replace('->', '')
             if self.done_actions.endswith(curr_task):
+                del self.tasks[key]
                 self.curr_reward += val
                 self.last_action = None
                 self.busy = False
@@ -233,6 +234,8 @@ if __name__ == '__main__':
     with open(tasks_file, 'r') as f:
         data = yaml.load(f)
         tasks = data['tasks']
+
+    act = ActionReq()
 
     locs = {}
     actions = {}
