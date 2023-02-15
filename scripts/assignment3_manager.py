@@ -6,7 +6,7 @@ import numpy as np
 from nav_msgs.msg import Odometry
 from std_msgs.msg import String
 from std_srvs.srv import Trigger, TriggerResponse
-from MRS_236609.srv import ActionReq
+from MRS_236609.srv import ActionReq, ActionReqResponse
 import yaml
 import os
 import dynamic_reconfigure.client
@@ -102,7 +102,7 @@ class AffordanceServ:
     def action_request(self, req):
         ws = req.workstation
         act = req.action
-        res = TriggerResponse()
+        res = ActionReqResponse()
         curr_ws = None
         for key, val in self.aff_cen.items():
             if point_in_square(self.curr_pose, val):
