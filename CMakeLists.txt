@@ -11,6 +11,7 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   rospy
   std_msgs
+  nav_msgs
   message_generation
 )
 
@@ -57,6 +58,7 @@ add_message_files(
  add_service_files(
    FILES
    ActionReq.srv
+   GetCostmap.srv
  )
 
 ## Generate actions in the 'action' folder
@@ -70,6 +72,7 @@ add_message_files(
 generate_messages(
   DEPENDENCIES
   std_msgs
+  nav_msgs
 )
 
 ################################################
