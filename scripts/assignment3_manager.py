@@ -13,6 +13,7 @@ import dynamic_reconfigure.client
 
 from visualization_msgs.msg import Marker
 from costmap_listen_and_update import CostmapUpdater
+from MRS_236609.srv import GetCostmap
 
 CUBE_EDGE = 0.5
 
@@ -63,6 +64,7 @@ class AffordanceServ:
         self.mv_DWA_client.update_configuration({"max_vel_x": 0.22})
         rospy.Service('/affordance_service', Trigger, self.handle_request)
         rospy.Service('/do_action', ActionReq, self.action_request)
+        rospy.Service('/initial_costmap', GetCostmap, self.get_costmap)
         self.odom_sub = rospy.Subscriber('/odom', Odometry, self.update_status)
         self.rviz_pub = RvizPublisher()
         self.cost_pub = rospy.Publisher('current_cost', String, queue_size=10)
@@ -77,6 +79,9 @@ class AffordanceServ:
         for key, val in self.aff_cen.items():
             self.rviz_pub.update_and_publish_markers(1, 0, 0, val[0], val[1], int(key[2]))
         rospy.Timer(rospy.Duration(1), self.publish_cost)
+
+    def get_costmap(self, req):
+        return self.cmu.initial_msg
 
     def check_and_update_reward(self):
         for key, val in self.tasks.items():
