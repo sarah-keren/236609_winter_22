@@ -12,6 +12,7 @@ class CostmapUpdater:
     def __init__(self):
         self.number_of_update = 0
         self.cost_map = None
+        self.initial_msg = None
         self.shape = None
         self.map_org = None
         self.resolution = None
@@ -19,6 +20,7 @@ class CostmapUpdater:
         rospy.Subscriber('/move_base/global_costmap/costmap_updates', OccupancyGridUpdate, self.costmap_callback_update)
 
     def init_costmap_callback(self, msg):
+        self.initial_msg = msg
         self.shape = msg.info.height, msg.info.width
         self.cost_map = np.array(msg.data).reshape(self.shape)
         self.map_org = np.array([msg.info.origin.position.x, msg.info.origin.position.y])
