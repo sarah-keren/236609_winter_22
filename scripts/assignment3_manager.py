@@ -200,8 +200,8 @@ class AffordanceServ:
         res.success = True
         if act.startswith('PU'):
             self.mv_DWA_client.update_configuration({"max_vel_x": 0.15})
-	        self.mv_DWA_client.update_configuration({"min_vel_x": -0.15})
-	        self.current_object = act[-1]
+	    self.mv_DWA_client.update_configuration({"min_vel_x": -0.15})
+	    self.current_object = act[-1]
         if act.startswith('ACT'):
             self.done_actions += act
         self.check_and_update_reward()
