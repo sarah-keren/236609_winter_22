@@ -62,7 +62,7 @@ class AffordanceServ:
         self.tasks = req_tasks
         self.mv_DWA_client = dynamic_reconfigure.client.Client("/move_base/DWAPlannerROS/")
         self.mv_DWA_client.update_configuration({"max_vel_x": 0.22})
-	    self.mv_DWA_client.update_configuration({"min_vel_x": -0.22})
+	self.mv_DWA_client.update_configuration({"min_vel_x": -0.22})
         rospy.Service('/affordance_service', Trigger, self.handle_request)
         rospy.Service('/do_action', ActionReq, self.action_request)
         rospy.Service('/initial_costmap', GetCostmap, self.get_costmap)
