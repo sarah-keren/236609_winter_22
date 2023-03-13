@@ -136,7 +136,7 @@ class AffordanceServ:
                     self.done_actions += act
                 if act.startswith('PU'):
                     self.mv_DWA_client.update_configuration({"max_vel_x": 0.15})
-		            self.mv_DWA_client.update_configuration({"min_vel_x": -0.15})
+		    self.mv_DWA_client.update_configuration({"min_vel_x": -0.15})
                     self.current_object = act[-1]
                 res.success = True
                 self.busy = True
@@ -176,7 +176,7 @@ class AffordanceServ:
             res.success = True
             if act.startswith('PU'):
                 self.mv_DWA_client.update_configuration({"max_vel_x": 0.15})
-		        self.mv_DWA_client.update_configuration({"min_vel_x": -0.15})
+		self.mv_DWA_client.update_configuration({"min_vel_x": -0.15})
                 self.current_object = act[-1]
             if act.startswith('ACT'):
                 self.done_actions += act
@@ -189,7 +189,7 @@ class AffordanceServ:
                 self.last_action = [ws, act]
                 res.success = True
                 self.mv_DWA_client.update_configuration({"max_vel_x": 0.22})
-		        self.mv_DWA_client.update_configuration({"min_vel_x": -0.22})
+		self.mv_DWA_client.update_configuration({"min_vel_x": -0.22})
                 self.current_object = None
                 return res
             res.success = False
